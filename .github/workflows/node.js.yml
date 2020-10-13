@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
@@ -15,38 +15,38 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build Nodejs project
-      - run: |
+        run: |
           npm install
           npm run build
       - uses: actions/upload-artifact@master
         with:
           name: Webpack artifacts
           path: public/
-          
+
   test:
     runs-on: ubuntu-latest
     needs: [build]
+
     strategy:
       matrix:
         node-version: [10.x, 12.x]
         os: [ubuntu-latest, windows-2016]
-    
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@master
         with:
-          name: Fetch webpack artifacts
+          name: Webpack artifacts
           path: public
-      
+
       - name: Use Node.js ${{ matrix.node-version }}
-      - uses: actions/setup-node@v1
+        uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      
+
       - name: Install and test
-      - run: |
+        run: |
           npm install
           npm test
-
-      - env:
+        env:
           CI: true
